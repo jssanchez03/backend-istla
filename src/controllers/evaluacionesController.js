@@ -265,7 +265,7 @@ async function notificarDocentesCoevaluacion(req, res) {
         const promesasEnvio = docentes.map(docente =>
             limit(async () => {
                 try {
-                    const correoDestino = process.env.DEBUG_EMAIL || docente.correo;
+                    const correoDestino = docente.correo;
                     const html = cargarTemplateYReemplazar({
                         NOMBRE: docente.nombre,
                         TIPO_EVALUACION: 'Coevaluación',

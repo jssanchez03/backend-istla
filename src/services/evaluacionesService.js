@@ -233,7 +233,7 @@ async function notificarEvaluacion(idEvaluacion) {
                         ? ''
                         : '<p>Si tienes dudas, comunícate con el coordinador académico.</p>';
 
-                    const correoDestino = process.env.DEBUG_EMAIL || destinatario.correo;
+                    const correoDestino = destinatario.correo;
 
                     const html = cargarTemplateYReemplazar({
                         NOMBRE: destinatario.nombre,

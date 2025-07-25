@@ -122,7 +122,7 @@ async function obtenerCorreoCoordinador() {
   const [rows] = await dbLectura.query(`
         SELECT CORREO_USUARIOS, DOCUMENTO_USUARIOS, NOMBRES_USUARIOS, APELLIDOS_USUARIOS
         FROM SEGURIDAD_USUARIOS
-        WHERE ID_PERFILES_USUARIOS IN (1, 17)
+        WHERE ID_PERFILES_USUARIOS IN (17)
           AND DELETED_AT IS NULL
           AND CORREO_USUARIOS IS NOT NULL
           AND CORREO_USUARIOS != '';
