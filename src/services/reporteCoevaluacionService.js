@@ -218,7 +218,7 @@ class ReporteCoevaluacionService {
                         doc.moveDown(0.5);
 
                         // Crear tabla
-                        this.crearTabla(doc, asignaciones);
+                        this.crearTabla(doc, asignaciones, periodo);
                         doc.moveDown(0); // Espacio reducido entre niveles de la misma carrera
                     });
 
@@ -289,7 +289,7 @@ class ReporteCoevaluacionService {
     }
 
     // ✅ MODIFICADO: Tabla con textos capitalizados
-    crearTabla(doc, asignaciones) {
+    crearTabla(doc, asignaciones, periodo) {
         const startY = doc.y;
         const baseRowHeight = 30; // Altura mínima
         const lineHeight = 12; // Altura por línea de texto
@@ -377,7 +377,8 @@ class ReporteCoevaluacionService {
             // Verificar si necesitamos nueva página
             if (currentY + rowHeight > doc.page.height - 140) {
                 doc.addPage();
-                this.agregarImagenesYEncabezado(doc, { descripcion_periodo: 'Continuación...' });
+                // Usar el periodo real pasado como argumento
+                this.agregarImagenesYEncabezado(doc, periodo);
                 currentY = doc.y;
 
                 // Redibujar encabezados en nueva página
