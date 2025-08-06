@@ -8,6 +8,47 @@ async function asignarCoevaluador(data) {
     if (data.id_docente_evaluador === data.id_docente_evaluado) {
         throw new Error('Un docente no puede evaluarse a sí mismo');
     }    
+    
+    // VALIDACIÓN DE FECHA: Solo verificar que no sea anterior a hoy
+    if (data.fecha) {
+        console.log('Fecha recibida del frontend:', data.fecha);
+        console.log('Tipo de fecha recibida:', typeof data.fecha);
+        
+        // Parsear la fecha manualmente para evitar problemas de zona horaria
+        const [year, month, day] = data.fecha.split('-').map(Number);
+        const fechaAsignacion = new Date(year, month - 1, day); // month - 1 porque Date usa 0-11
+        const fechaActual = new Date();
+        
+        // Resetear las horas para comparar solo fechas
+        fechaActual.setHours(0, 0, 0, 0);
+        fechaAsignacion.setHours(0, 0, 0, 0);
+        
+        // Debug: Mostrar las fechas para verificar
+        console.log('Fecha asignación:', fechaAsignacion.toDateString());
+        console.log('Fecha actual:', fechaActual.toDateString());
+        console.log('¿Es anterior?', fechaAsignacion < fechaActual);
+        
+        if (fechaAsignacion < fechaActual) {
+            throw new Error('No se puede crear una asignación con una fecha anterior a la fecha actual');
+        }
+        
+        // Si se proporcionan horas, solo validar que la hora de fin sea posterior a la hora de inicio
+        if (data.hora_inicio && data.hora_fin) {
+            const [horaInicio, minutoInicio] = data.hora_inicio.split(':').map(Number);
+            const [horaFin, minutoFin] = data.hora_fin.split(':').map(Number);
+            
+            const fechaHoraInicio = new Date(data.fecha);
+            fechaHoraInicio.setHours(horaInicio, minutoInicio, 0, 0);
+            
+            const fechaHoraFin = new Date(data.fecha);
+            fechaHoraFin.setHours(horaFin, minutoFin, 0, 0);
+            
+            if (fechaHoraFin <= fechaHoraInicio) {
+                throw new Error('La hora de fin debe ser posterior a la hora de inicio');
+            }
+        }
+    }
+    
     // Verificar que existan los docentes y el período
     const [docenteEvaluadorExiste, docenteEvaluadoExiste, periodoExiste] = await Promise.all([
         asignacionesRepository.verificarDocente(data.id_docente_evaluador),
@@ -65,6 +106,39 @@ async function editarAsignacion(id_asignacion, data) {
     if (data.id_docente_evaluador === data.id_docente_evaluado) {
         throw new Error('Un docente no puede evaluarse a sí mismo');
     }
+    
+    // VALIDACIÓN DE FECHA: Solo verificar que no sea anterior a hoy
+    if (data.fecha) {
+        // Parsear la fecha manualmente para evitar problemas de zona horaria
+        const [year, month, day] = data.fecha.split('-').map(Number);
+        const fechaAsignacion = new Date(year, month - 1, day); // month - 1 porque Date usa 0-11
+        const fechaActual = new Date();
+        
+        // Resetear las horas para comparar solo fechas
+        fechaActual.setHours(0, 0, 0, 0);
+        fechaAsignacion.setHours(0, 0, 0, 0);
+        
+        if (fechaAsignacion < fechaActual) {
+            throw new Error('No se puede editar una asignación con una fecha anterior a la fecha actual');
+        }
+        
+        // Si se proporcionan horas, solo validar que la hora de fin sea posterior a la hora de inicio
+        if (data.hora_inicio && data.hora_fin) {
+            const [horaInicio, minutoInicio] = data.hora_inicio.split(':').map(Number);
+            const [horaFin, minutoFin] = data.hora_fin.split(':').map(Number);
+            
+            const fechaHoraInicio = new Date(data.fecha);
+            fechaHoraInicio.setHours(horaInicio, minutoInicio, 0, 0);
+            
+            const fechaHoraFin = new Date(data.fecha);
+            fechaHoraFin.setHours(horaFin, minutoFin, 0, 0);
+            
+            if (fechaHoraFin <= fechaHoraInicio) {
+                throw new Error('La hora de fin debe ser posterior a la hora de inicio');
+            }
+        }
+    }
+    
     return await asignacionesRepository.editarAsignacion(id_asignacion, data);
 }
 

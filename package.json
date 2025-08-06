@@ -3,13 +3,28 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "security:audit": "npm audit",
+    "security:fix": "npm audit fix",
+    "security:check": "npm audit --audit-level=moderate",
+    "security:outdated": "npm outdated",
+    "security:scan": "npm audit && npm outdated",
+    "security:test": "node security-tests.js",
+    "security:penetration": "node penetration-test.js",
+    "security:zap": "node zap-security-scan.js",
+    "security:full": "node run-security-tests.js",
+    "security:quick": "npm run security:audit && npm run security:test",
+    "security:reports": "node generate-security-report.js",
+    "security:test-app": "node test-security.js",
+    "start:secure": "node index.js",
+    "dev:secure": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "axios": "^1.11.0",
     "cors": "^2.8.5",
     "docx": "^9.5.1",
     "docxtemplater": "^3.65.1",
@@ -30,6 +45,11 @@
     "pizzip": "^3.2.0"
   },
   "devDependencies": {
+    "bcryptjs": "^2.4.3",
+    "crypto": "^1.0.1",
+    "express-rate-limit": "^7.5.1",
+    "express-validator": "^7.2.1",
+    "helmet": "^7.2.0",
     "nodemon": "^3.1.10"
   }
 }
